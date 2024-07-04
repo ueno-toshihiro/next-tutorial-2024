@@ -2,8 +2,12 @@ import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
 import { Metadata } from 'next';
 
+// テンプレート内の %s は特定のページタイトルに置き換えられます
 export const metadata: Metadata  = {
-  title: 'Acme Dashboard',
+  title: {
+    template: '%s | Acme Dashboard',
+    default: 'Acme Dashboard',
+  },
   description: 'App Routerで構築された公式のNext.jsダッシュボード',
   metadataBase: new URL('https://next-learn-dashboard.vercel.sh'),
 };

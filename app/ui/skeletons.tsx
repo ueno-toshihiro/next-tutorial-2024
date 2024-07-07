@@ -6,6 +6,7 @@ export function CardSkeleton() {
   return (
     <div
       className={`${shimmer} relative overflow-hidden rounded-xl bg-gray-100 p-2 shadow-sm`}
+      data-testid="cardSkeleton"
     >
       <div className="flex p-4">
         <div className="h-5 w-5 rounded-md bg-gray-200" />
@@ -19,6 +20,7 @@ export function CardSkeleton() {
 }
 
 export function CardsSkeleton() {
+  console.log('>>>>>>>>>>>>  CardsSkeleton');
   return (
     <>
       <CardSkeleton />
@@ -31,7 +33,7 @@ export function CardsSkeleton() {
 
 export function RevenueChartSkeleton() {
   return (
-    <div className={`${shimmer} relative w-full overflow-hidden md:col-span-4`}>
+    <div className={`${shimmer} relative w-full overflow-hidden md:col-span-4`} data-testid="revenueChartSkeleton">
       <div className="mb-4 h-8 w-36 rounded-md bg-gray-100" />
       <div className="rounded-xl bg-gray-100 p-4">
         <div className="mt-0 grid h-[410px] grid-cols-12 items-end gap-2 rounded-md bg-white p-4 sm:grid-cols-13 md:gap-4" />
@@ -46,7 +48,7 @@ export function RevenueChartSkeleton() {
 
 export function InvoiceSkeleton() {
   return (
-    <div className="flex flex-row items-center justify-between border-b border-gray-100 py-4">
+    <div className="flex flex-row items-center justify-between border-b border-gray-100 py-4" data-testid="invoiceSkeleton">
       <div className="flex items-center">
         <div className="mr-2 h-8 w-8 rounded-full bg-gray-200" />
         <div className="min-w-0">

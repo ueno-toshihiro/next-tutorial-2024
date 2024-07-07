@@ -36,6 +36,7 @@ describe('generateYAxis', () => {
 })
 describe('generatePagination', () => {
   test('should generate pagination correctly', () => {
+    expect(generatePagination(1, 7)).toEqual([1, 2, 3, 4, 5, 6 ,7])
     expect(generatePagination(1, 10)).toEqual([1, 2, 3, '...', 9, 10])
     expect(generatePagination(5, 10)).toEqual([1, '...', 4, 5, 6, '...', 10])
     expect(generatePagination(10, 10)).toEqual([1, 2, '...', 8, 9, 10])

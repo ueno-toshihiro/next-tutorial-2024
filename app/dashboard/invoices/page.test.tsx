@@ -40,7 +40,7 @@ describe('Page', () => {
 
   test('should render invoices page', async () => {
     const {debug} = render(await Page(mockData));
-    console.log(debug());
+    // console.log(debug());
     expect(
       screen.getByRole("heading", { level: 1, name: 'Invoices'}))
       .toBeDefined();

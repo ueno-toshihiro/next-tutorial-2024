@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { expect, test, describe, vi, beforeEach, afterEach } from 'vitest';
 import RevenueChart from './revenue-chart';
 import * as fetchFunctions from '@/app/lib/data';
-import { b } from 'vitest/dist/suite-IbNSsUWN.js';
 
 const data = [
   {

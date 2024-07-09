@@ -32,17 +32,44 @@ vi.mock("next/navigation", async (importOriginal) => {
 
 describe('Page', () => {
   beforeEach(() => {
-    vi.spyOn(fetchFunctions, 'fetchInvoicesPages').mockReturnValue(new Promise((resolve) => resolve(1)));
+    vi.mock('@/app/lib/data', async (importOriginal) => {
+      const actual = await importOriginal() as typeof fetchFunctions;
+      return {
+        ...actual,
+        fetchInvoicesPages: async () => new Promise((resolve) => resolve(1)),
+        fetchFilteredInvoices: async () => new Promise((resolve) => resolve([])),
+      };
+    });
   });
   afterEach(() => {
     vi.restoreAllMocks()
   });
 
-  test('should render invoices page', async () => {
-    const {debug} = render(await Page(mockData));
-    // console.log(debug());
+  test('Page が表示されることを確認する', async () => {
+    render(await Page(mockData));
     expect(
       screen.getByRole("heading", { level: 1, name: 'Invoices'}))
       .toBeDefined();
+  });
+
+  test('引数の searchParams が空オブジェクトのとき内部変数 query は "", currentPage は 1 となることを確認する', async () => {
+    render(await Page({}));
+    const query = '';
+    const currentPage = 1;  
+    expect(screen.getByTestId(`pageArgs-${query}-${currentPage}`)).toBeDefined();
+  });
+
+  test('引数の searchParams に値があるとき内部変数 query は "testFooBar", currentPage は 2 となることを確認する', async () => {
+    const params = {
+      searchParams: {
+        query: 'testFooBar',
+        page: '2',
+      }
+    };
+
+    render(await Page(params));
+    const query = params.searchParams.query;
+    const currentPage = params.searchParams.page;  
+    expect(screen.getByTestId(`pageArgs-${query}-${currentPage}`)).toBeDefined();
   });
 });

@@ -1,9 +1,22 @@
-import { expect, test, describe } from 'vitest';
+import { expect, test, describe, vi, beforeEach, afterEach } from 'vitest';
 import {
   createInvoice,
   updateInvoice,
   deleteInvoice,
+  authenticate,
 } from '@/app/lib/actions';
+import *  as auth from '@/auth';
+import { AuthError } from 'next-auth';
+
+// AuthError を継承したカスタムエラークラスで type プロパティを持たせて error.type をテストする
+class CustomAuthError extends AuthError  {
+  static type: string;
+
+  constructor(message?: any) {
+    super();
+    this.type = message;
+  }
+}
 
 describe('actions', () => {
   describe('createInvoice', () => {
@@ -94,5 +107,61 @@ describe('actions', () => {
       expect(result).toEqual({ message: 'Database Error: Failed to Delete Invoice.' });
     });
   });
-});
 
+  describe('authenticate', () => {
+    afterEach(() => {
+      vi.clearAllMocks();
+      vi.restoreAllMocks();
+    });
+
+    test('error.type CredentialsSignin のとき戻り値が Invalid credentials. になることを確認する ', async () => {
+      vi.mock('@/auth', async (importOriginal) => {
+        const actual = await importOriginal() as typeof auth;
+        return {
+          ...actual,
+          signIn: () => {
+            const error = new CustomAuthError('CredentialsSignin');
+            throw error;
+          },
+        };
+      });
+
+      const result = await authenticate(undefined, new FormData());
+      expect(result).toBe('Invalid credentials.');
+    });
+
+    test('error.type CredentialsSignin 以外のとき戻り値が something went wrong. になることを確認する', async () => {
+      vi.mock('@/auth', async (importOriginal) => {
+        const actual = await importOriginal() as typeof auth;
+        return {
+          ...actual,
+          signIn: () => {
+            const error = new CustomAuthError('Foo');
+            throw error;
+          },
+        };
+      });
+
+      const result = await authenticate(undefined, new FormData());
+      expect(result).toBe('something went wrong.');
+    });
+
+    test('error.type がないときは エラー内容をそのまま返すことを確認する', async () => {
+      vi.mock('@/auth', async (importOriginal) => {
+        const actual = await importOriginal() as typeof auth;
+        return {
+          ...actual,
+          signIn: () => {
+            throw 'huga';
+          },
+        };
+      });
+
+      try {
+        await authenticate(undefined, new FormData());
+      } catch (error) {
+        expect(error).toBe('huga');
+      }
+    });
+  });
+});
